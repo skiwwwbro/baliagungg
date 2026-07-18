@@ -118,10 +118,12 @@ Route::post('/midtrans/notification', [CarPaymentController::class, 'notificatio
 Route::middleware(['auth', 'verified'])->group(function () {
 
     /*
-    |--------------------------------------------------------------------------
-    | Email Verification
-    |--------------------------------------------------------------------------
-    */
+|--------------------------------------------------------------------------
+| EMAIL VERIFICATION
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
 
     Route::get('/email/verify', function () {
         return view('auth.verify-email');
@@ -131,13 +133,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         $request->fulfill();
 
-        return redirect()
-            ->route('home')
+        return redirect()->route('home')
             ->with('success', 'Email verified successfully.');
 
-    })
-    ->middleware(['signed', 'throttle:6,1'])
-    ->name('verification.verify');
+    })->middleware(['signed', 'throttle:6,1'])
+      ->name('verification.verify');
 
     Route::post('/email/verification-notification', function (Request $request) {
 
@@ -145,9 +145,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return back()->with('success', 'Verification link sent.');
 
-    })
-    ->middleware('throttle:6,1')
-    ->name('verification.send');
+    })->middleware('throttle:6,1')
+      ->name('verification.send');
+
+});
 
     /*
     |--------------------------------------------------------------------------

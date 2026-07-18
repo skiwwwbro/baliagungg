@@ -3,11 +3,10 @@
 namespace App\Providers;
 
 use App\Models\CarBooking;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\ServiceProvider;
 use App\Policies\CarBookingPolicy;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,22 +16,11 @@ class AppServiceProvider extends ServiceProvider
     }
 
     public function boot(): void
-{
-    if (app()->isProduction()) {
-        URL::forceScheme('https');
-    }
-
-    Gate::policy(
-        CarBooking::class,
-        CarBookingPolicy::class
-    );
-
-    View::composer('admin.*', function ($view) {
-        $newOrders = CarBooking::where('is_read', false)->count();
-
-        $view->with('newOrders', $newOrders);
-    });
-
+    {
+        Gate::policy(
+            CarBooking::class,
+            CarBookingPolicy::class
+        );
 
         View::composer('admin.*', function ($view) {
             $newOrders = CarBooking::where('is_read', false)->count();
